@@ -1,52 +1,51 @@
-{ lib, buildPythonPackage, fetchFromGitHub, setuptools, backoff, joblib, openai
-, pandas, spacy, regex, ujson, tqdm, datasets, optuna, json-repair, litellm
-, diskcache, tenacity, anyio, pydantic, magicattr, asyncer, cloudpickle
-, cachetools }:
+{ lib, buildPythonPackage, fetchFromGitHub, pythonRelaxDepsHook, setuptools
+, openai, regex, orjson, tqdm, requests, pydantic, litellm, diskcache
+, json-repair, tenacity, anyio, asyncer, cachetools, cloudpickle, numpy
+, xxhash, gepa, typeguard }:
 
-let
+buildPythonPackage rec {
   pname = "dspy";
-  version = "2.6.0rc8";
-
-in buildPythonPackage {
-  inherit pname version;
+  version = "3.2.1";
 
   src = fetchFromGitHub {
     owner = "stanfordnlp";
-    repo = "dspy";
+    repo = pname;
     rev = version;
-    hash = "sha256-dccfZG3sv5fdZAQJOVIJB043GDdzWdk/pJxGuk0dYI4=";
+    hash = "sha256-xquV+FyDfejm1SCWYfuiezIkyutmm/1zOvd5X+oElrM=";
   };
 
   pyproject = true;
+  nativeBuildInputs = [ pythonRelaxDepsHook ];
   build-system = [ setuptools ];
 
   dependencies = [
-    backoff
-    joblib
     openai
-    pandas
-    spacy
     regex
-    ujson
+    orjson
     tqdm
-    datasets
-    optuna
-    json-repair
+    requests
+    pydantic
     litellm
     diskcache
+    json-repair
     tenacity
     anyio
-    pydantic
-    magicattr
     asyncer
-    cloudpickle
     cachetools
+    cloudpickle
+    numpy
+    xxhash
+    gepa
+    typeguard
   ];
 
-  # workaround the error: Permission denied: '/homeless-shelter' in check
+  pythonRelaxDeps = [ "asyncer" "typeguard" ];
+
+  # Work around checks that try to write into HOME.
   preHook = ''
     export HOME=$(mktemp -d)
   '';
+
   pythonImportsCheck = [ "dspy" ];
 
   meta = with lib; {

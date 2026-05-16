@@ -9,6 +9,7 @@
           textgrad = py-final.callPackage ./textgrad { };
 
           magicattr = py-final.callPackage ./dspy/magicattr.nix { };
+          gepa = py-final.callPackage ./dspy/gepa.nix { };
           dspy = py-final.callPackage ./dspy { };
 
           e2b = py-final.callPackage ./e2b {};
@@ -60,7 +61,7 @@
   perSystem = { pkgs, lib, ... }: {
     packages = {
       inherit (pkgs.python3Packages) textgrad e2b e2b-code-interpreter llama-index agno
-          tantivy livekit-rtc livekit-agents livekit-plugins-speechmatics livekit-plugins-openai livekit-plugins-deepgram
+          tantivy gepa dspy livekit-rtc livekit-agents livekit-plugins-speechmatics livekit-plugins-openai livekit-plugins-deepgram
           livekit-plugins-elevenlabs livekit-plugins-silero livekit-plugins-turn-detector
           pysilero-vad qwen-tts;
       inherit (pkgs) claude-code-bin codex ollama pi-coding-agent;
